@@ -1,0 +1,101 @@
+'''
+Tripathi Surbhi
+Data Structures-Stack(Postfix)
+'''
+
+RANK = 0
+#push operation
+def push(S, key, size):
+    if len(S) == size:
+        print("stack Overflow")
+    else:
+        S.append(key)
+
+#pop operation
+def pop(S):
+    if len(S) < 1:
+        print("stack underflow")
+    else:
+        x = S[-1]
+        del S[-1]
+        return x
+
+# assign incoming priority
+def icp(check):
+    if check == '+' or check == '-':
+        return 1
+    elif check == '*' or check == '/':
+        return 3
+    elif check == '^':
+        return 6
+    elif check == '(':
+        return 9
+    elif check == ')':
+        return 0
+    else:
+        return 7
+
+# assign in-stack priority
+def isp(check):
+    if check == '+' or check == '-':
+        return 2
+    elif check == '*' or check == '/':
+        return 4
+    elif check == '^':
+        return 5
+    elif check == '(':
+        return 0
+    elif check == ')':
+        return -1
+    else:
+        return 8
+
+#assign rank to check if expression is valid
+def rank(check):
+    if check == '+' or check == '-' or check == '*' or check == '/':
+        return -1
+    elif check == '(' or check == ')':
+        return 0
+    else:
+        return 1
+
+# input
+EXP = input('Enter the expression: ')
+size = len(EXP)
+S = list()
+OUT = list()
+sp = ' '
+print("OUTPUT" + (size - 5) * sp + "Stack")
+
+# loop to check icp and isp condition of every character of string
+
+for i in range(size):
+    next = EXP[i]
+    if len(S) == 0:
+        push(S, next, size)
+    else:
+        while len(S) > 0 and icp(next) < isp(S[len(S) - 1]):
+            OUT.append(pop(S))
+            RANK += rank(OUT[len(OUT) - 1])
+            if OUT[-1] == ')' or OUT[-1] == '(':
+                del OUT[-1]
+            if RANK < 1:
+                print("Invalid Expression")
+                exit()
+        push(S, next, size)
+    print("".join(OUT) + (size + 1 - len(OUT))* sp + "".join(S))
+
+
+while len(S) > 0:
+    OUT.append(pop(S))
+    RANK += rank(OUT[len(OUT) - 1])
+    if OUT[-1] == ')' or OUT[-1] == '(':
+        del OUT[-1]
+    print("".join(OUT) + (size + 1 - len(OUT)) * sp + "".join(S))
+    if RANK < 1:
+        print("Invalid Expression")
+        exit()
+
+# print final Expression
+print("\n\n Postfix Expression:")
+print("".join(OUT))
